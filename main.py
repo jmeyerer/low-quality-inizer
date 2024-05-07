@@ -4,17 +4,26 @@ from pytube import YouTube
 import os
 
 
-def low_quality_inize(url: str):
+def low_quality_inize(url: str, image: str = None):
     file = download_mp3(url)
     if file:
         input_file = file + ".mp3"
-        output_file = file + "_low_quality.mp3"
+        output_file = file + "_low_quality.mp4"
         print(input_file)
         print(output_file)
-        subprocess.run(
-            [f"ffmpeg -i \"{input_file}\" -b:a 8k \"{output_file}\""],
-            shell=True
-        )
+
+        if image:
+            subprocess.run(
+                [
+                    f"ffmpeg -loop -i \"{image}\" -i \"{input_file}\" -c:v libx264 aac -strict experimental -b:a 8k -shortest \"{output_file}\""],
+                shell=True
+            )
+        else:
+            subprocess.run(
+                [
+                    f"ffmpeg -i \"{input_file}\" -b:a 8k -vn \"{output_file}\""],
+                shell=True
+            )
         print("Done")
 
 
