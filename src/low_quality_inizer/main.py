@@ -66,18 +66,18 @@ def get_quality(quality):
 
 def download_mp3(url: str):
     try:
-        video = YouTube(str(url), use_oauth=True, allow_oauth_cache=True)
+        video = YouTube(str(url.replace("'", "")), use_oauth=True, allow_oauth_cache=True)
         audio = video.streams.filter(only_audio=True).first()
 
         out_file = audio.download(output_path=os.getcwd())
         base, ext = os.path.splitext(out_file)
-        base = base[:len(os.getcwd())] + base[len(os.getcwd()):].lower().replace(" ", "-")
+        base = base[:len(os.getcwd())] + base[len(os.getcwd()):].lower().replace(" ", "-").replace("(", "").replace(")","")
         new_file = base + '.mp3'
         os.rename(out_file, new_file)
 
         return base[len(os.getcwd())+1:]
     except Exception:
-        print("Couldn't download the supplied YouTube video")
+        print("Couldn't download the requested YouTube video")
         return False
 
 
